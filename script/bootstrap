@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+function bootstrap {
+  local shome="$(cd -P -- "$(dirname -- "$BASH_SOURCE")/.." && pwd -P)"
+  source "$shome/script/profile"
+
+  export GO15VENDOREXPERIMENT=1 # only required for go 1.5.x
+  export GOROOT="$(dirname $(dirname $(which go)))"
+  export GOPATH="$shome/vendor/gocode"
+  export PATH="$PATH:$GOPATH/bin:$GOROOT/bin"
+
+  mkdir -p "$GOPATH/src/github.com/docker"
+
+  cd "$GOPATH/src/github.com/docker"
+  git clone git@github.com:docker/distribution|| true
+
+  cd distribution
+  git fetch
+  git reset --hard origin/master
+
+  go get github.com/tools/godep
+  go get github.com/golang/lint/golint
+
+  GOPATH="$(pwd)/Godeps/_workspace:$GOPATH" make binaries
+
+  ln -nfs "../vendor/gocode/src/github.com/docker/distribution/bin/registry" "$shome/bin/"
+  ln -nfs "../vendor/gocode/src/github.com/docker/distribution/bin/digest" "$shome/bin/"
+  ln -nfs "../vendor/gocode/src/github.com/docker/distribution/bin/registry-api-descriptor-template" "$shome/bin/"
+}
+
+bootstrap

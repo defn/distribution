@@ -1,0 +1,15 @@
+version: 0.1
+log:
+  level: info
+  fields:
+    service: registry
+    environment: limbo
+storage:
+    cache:
+        blobdescriptor: inmemory
+    filesystem:
+        rootdirectory: /vagrant/cache/distribution
+http:
+    addr: 0.0.0.0:5000
+    debug:
+        addr: localhost:5001

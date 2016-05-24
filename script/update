@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+function bootstrap {
+  local shome="$(cd -P -- "$(dirname -- "$BASH_SOURCE")/.." && pwd -P)"
+  source "$shome/script/profile"
+
+  ln -nfs "../vendor/gocode/src/github.com/docker/distribution/bin/registry" "$shome/bin/"
+  ln -nfs "../vendor/gocode/src/github.com/docker/distribution/bin/digest" "$shome/bin/"
+  ln -nfs "../vendor/gocode/src/github.com/docker/distribution/bin/registry-api-descriptor-template" "$shome/bin/"
+
+  block compile service
+}
+
+bootstrap
